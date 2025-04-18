@@ -228,10 +228,13 @@ class Graph:
     def read_from_file(file_path):
         with open(file_path, 'r') as file:
             
-            first_line = file.readline().strip().lower()
+            first_line = file.readline().strip().lower().split()
             directed = 'directed' in first_line
             weighted = 'weighted' in first_line
             
+
+            print(first_line)
+
             g = Graph(directed=directed, weighted=weighted)
             
             for line in file:

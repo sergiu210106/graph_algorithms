@@ -8,6 +8,8 @@ g = Graph()
 g = Graph.read_from_file("a3_examples/Positive only dataset/A3_v100000_e400000_positives_8.txt")
 g.read_positions_from_file("a3_examples/Positive only dataset/A3_v100000_e400000_positives_8_vertex_positions.txt")
 
+print(g.directed)
+
 start_vertex = input("Enter start vertex: ")
 end_vertex = input("Enter end vertex: ")
 
