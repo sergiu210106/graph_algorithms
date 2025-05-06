@@ -11,7 +11,7 @@ def topological_sort(graph : Graph):
 
     queue = deque([v for v in graph.get_vertices() if in_degree[v] == 0])
     top_order = []
-
+    
     while queue:
         u = queue.popleft()
         top_order.append(u)
@@ -102,24 +102,23 @@ def tree_to_graph(tree):
             return
 
         root, l, r = node
-        g.add_vertex(root)
+        if root not in g.get_vertices():
+            g.add_vertex(root)
 
         if l:
-            if isinstance(l, tuple):
-                g.add_vertex(l[0])
-                g.add_edge(root,l[0])
-            else:
-                g.add_vertex(l)
-                g.add_edge(root, l)
+            child = l[0] if isinstance(l, tuple) else l
 
+            if child not in g.get_vertices():
+                g.add_vertex(child)
+            g.add_edge(root, child)
 
         if r:
-            if isinstance(r, tuple):
-                g.add_vertex(r[0])
-                g.add_edge(root,r[0])
-            else:
-                g.add_vertex(r)
-                g.add_edge(root, r)
+            child = r[0] if isinstance(r, tuple) else r
+
+            if child not in g.get_vertices():
+                g.add_vertex(child)
+
+            g.add_edge(root, child)
 
         if isinstance(l, tuple):
             dfs(l)
