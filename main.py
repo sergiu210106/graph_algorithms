@@ -1,13 +1,9 @@
-from graph import Graph
-from a5 import is_eulerian, find_eulerian_circuit
+from graph import Graph, read_from_file
+from a5 import *
 
-g = Graph(directed=False)
-g.add_vertex("A")
-g.add_vertex("B")
-g.add_vertex("C")
-g.add_edge("A", "B")
-g.add_edge("B", "C")
-g.add_edge("C", "A")
+g = read_from_file("A5_bipartite.txt")
 
-print("Is Eulerian?", is_eulerian(g))
-print("Eulerian Circuit:", find_eulerian_circuit(g))
+print(g)
+
+print(maximum_matching_bipartite(g))
+

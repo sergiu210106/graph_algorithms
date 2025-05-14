@@ -1,53 +1,75 @@
+from collections import deque
 from graph import Graph
-
-def is_eulerian(graph: Graph) -> bool:
+def maximum_matching_bipartite(graph: Graph):
     if graph.directed:
-        in_degrees = {v: 0 for v in graph.list_of_neighbours}
-        out_degrees = {v: len(graph.list_of_neighbours[v]) for v in graph.list_of_neighbours}
+        raise ValueError("Graph must be undirected")
 
-        for u in graph.list_of_neighbours:
-            for neighbor in graph.list_of_neighbours[u]:
-                v = neighbor[0] if graph.weighted else neighbor
-                in_degrees[v] += 1
+    # Step 1: Partition the graph using BFS (coloring)
+    color = {}
+    U, V = set(), set()
 
-        return all(in_degrees[v] == out_degrees[v] for v in graph.list_of_neighbours)
-    else:
-        for v in graph.list_of_neighbours:
-            if len(graph.list_of_neighbours[v]) % 2 != 0:
-                return False
+    for vertex in graph.get_vertices():
+        if vertex not in color:
+            queue = deque([vertex])
+            color[vertex] = 0
+            U.add(vertex)
+            while queue:
+                u = queue.popleft()
+                for v in graph.neighbours(u):
+                    if v not in color:
+                        color[v] = 1 - color[u]
+                        if color[v] == 0:
+                            U.add(v)
+                        else:
+                            V.add(v)
+                        queue.append(v)
+                    elif color[v] == color[u]:
+                        raise ValueError("Graph is not bipartite")
+
+    pair_U = {u: None for u in U}
+    pair_V = {v: None for v in V}
+    dist = {}
+
+    def bfs():
+        queue = deque()
+        for u in U:
+            if pair_U[u] is None:
+                dist[u] = 0
+                queue.append(u)
+            else:
+                dist[u] = float('inf')
+        
+        dist[None] = float('inf')
+
+        while queue:
+            u = queue.popleft()
+            if dist[u] < dist[None]:
+                for v in graph.neighbours(u):
+                    if pair_V[v] is None:
+                        if dist[None] == float('inf'):
+                            dist[None] = dist[u] + 1
+                    elif dist[pair_V[v]] == float('inf'):
+                        dist[pair_V[v]] = dist[u] + 1
+                        queue.append(pair_V[v])
+        return dist[None] != float('inf')
+
+    def dfs(u):
+        if u is not None:
+            for v in graph.neighbours(u):
+                if pair_V[v] is None or (dist[pair_V[v]] == dist[u] + 1 and dfs(pair_V[v])):
+                    pair_U[u] = v
+                    pair_V[v] = u
+                    return True
+            dist[u] = float('inf')
+            return False
         return True
 
+    matching = 0
+    while bfs():
+        for u in U:
+            if pair_U[u] is None:
+                if dfs(u):
+                    matching += 1
 
-def find_eulerian_circuit(graph: Graph) -> list:
-    if not is_eulerian(graph):
-        raise ValueError("Graph is not Eulerian")
-
-    graph_copy = {u: list(graph.list_of_neighbours[u])[:] for u in graph.list_of_neighbours}
-    stack = []
-    circuit = []
-
-    current = next((v for v in graph_copy if graph_copy[v]), None)
-    if current is None:
-        return []
-
-    stack.append(current)
-
-    while stack:
-        if graph_copy[current]:
-            stack.append(current)
-            if graph.weighted:
-                next_vertex = graph_copy[current].pop()[0]
-            else:
-                next_vertex = graph_copy[current].pop()
-            if not graph.directed:
-                if graph.weighted:
-                    reverse_edge = (current, graph.get_weight(next_vertex, current))
-                    graph_copy[next_vertex].remove(reverse_edge)
-                else:
-                    graph_copy[next_vertex].remove(current)
-            current = next_vertex
-        else:
-            circuit.append(current)
-            current = stack.pop()
-
-    return circuit[::-1]
+    matched_pairs = [(u, pair_U[u]) for u in U if pair_U[u] is not None]
+    return matched_pairs
