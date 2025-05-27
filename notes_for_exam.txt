@@ -1,0 +1,15 @@
+Graph Analysis
+
+1) Graph density
+	- how many edges compared to how many it could have
+	- ro(G) = number of edges(e) / number of edges of complete graph
+	
+	- for directed: ro(G) = e / (v * (v-1))
+	- for undirected: ro(G) = 2 * e / (v * (v-1))
+
+ 	- dense graph: ro(G) -> 1
+	- sparse graph: ro(G) -> 0
+
+	Types of graphs:
+		- Small world graph
+		
