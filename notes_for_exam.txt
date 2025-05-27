@@ -10,6 +10,52 @@ Graph Analysis
  	- dense graph: ro(G) -> 1
 	- sparse graph: ro(G) -> 0
 
-	Types of graphs:
-		- Small world graph
+2) Types of graphs:
+	- Small world graph
+		average length: sum(distance(v1,v2)) for v1, v2 in graph.get_vertices() / v(v-1)
+		average length < log (v)
+	- Scale-free graphs
+ 		there are few vertices of very high degree, but on average the degree of vertices is low
+		the vertices with high degree are called hubs
+
+3) Analyze Centrality ~ how important a vertex or an edge is
+	- degree centrality
+		- difference between degree and average degree: centrality(v) = degree(v) / average_degree
+		- hubs in scale-free graphs have a high degree centrality
 		
+	- betweenness centrality
+		- edge betweenness centrality ~ how many shortest paths between 2 vertices have passed through this edge
+		- betweenness centrality works with or without weights
+
+		- the same for vertices ~ how many shortest paths go through a specific vertex
+
+4) Clusters
+	cluster ~ a subgraph that has much bigger density than the graph itself
+
+	clusters with density 1? Cliques
+
+	Finding biggest clusters with density > 0.8 ? (for example)
+		application: finding language families
+
+
+For the exam:
+	1h45mins
+	need: paper
+	cheat sheet allowed (handwritten!!)
+	write name on it, give it at the end of the test
+	one sheet, standard a4 
+
+mock test:
+	first part - complexity
+		lejer
+	second part - use an algorithm to draw the next steps after a few given ones 
+	- for this test, MST and Prim's algorithm -> explain a bit why 
+
+	third part
+	- if possible - more efficient
+	
+	
+	
+	
+	
+	
