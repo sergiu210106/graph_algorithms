@@ -225,43 +225,6 @@ class Graph:
                 s += f"{k}\n"
         return s
 
-    def read_from_file(file_path):
-        with open(file_path, 'r') as file:
-            
-            first_line = file.readline().strip().lower().split()
-            directed = 'directed' in first_line
-            weighted = 'weighted' in first_line
-            
-
-            print(first_line)
-
-            g = Graph(directed=directed, weighted=weighted)
-            
-            for line in file:
-                parts = line.strip().split()
-                if not parts:
-                    continue
-                
-                if len(parts) == 1:
-                    vertex = parts[0]
-                    if vertex not in g.list_of_neighbours:
-                        g.add_vertex(vertex)
-                elif weighted:
-                    start_vertex, terminal_vertex = parts[0], parts[1]
-                    weight_str = parts[2]
-                    weight = int(weight_str)
-                    
-                    for v in [start_vertex, terminal_vertex]:
-                        if v not in g.list_of_neighbours:
-                            g.add_vertex(v)
-                    g.add_edge(start_vertex, terminal_vertex, weight)
-                else:
-                    start_vertex, terminal_vertex = parts[0], parts[1]
-                    for v in [start_vertex, terminal_vertex]:
-                        if v not in g.list_of_neighbours: 
-                            g.add_vertex(v)
-                    g.add_edge(start_vertex, terminal_vertex)
-        return g
 
     def read_positions_from_file(self, file_path):
         with open(file_path, 'r') as file:
@@ -349,3 +312,41 @@ class DFSIterator:
             return (current, depth)
         raise StopIteration
   
+
+def read_from_file(file_path):
+    with open(file_path, 'r') as file:
+        
+        first_line = file.readline().strip().lower().split()
+        directed = 'directed' in first_line
+        weighted = 'weighted' in first_line
+        
+
+        print(first_line)
+
+        g = Graph(directed=directed, weighted=weighted)
+        
+        for line in file:
+            parts = line.strip().split()
+            if not parts:
+                continue
+            
+            if len(parts) == 1:
+                vertex = parts[0]
+                if vertex not in g.list_of_neighbours:
+                    g.add_vertex(vertex)
+            elif weighted:
+                start_vertex, terminal_vertex = parts[0], parts[1]
+                weight_str = parts[2]
+                weight = int(weight_str)
+                
+                for v in [start_vertex, terminal_vertex]:
+                    if v not in g.list_of_neighbours:
+                        g.add_vertex(v)
+                g.add_edge(start_vertex, terminal_vertex, weight)
+            else:
+                start_vertex, terminal_vertex = parts[0], parts[1]
+                for v in [start_vertex, terminal_vertex]:
+                    if v not in g.list_of_neighbours: 
+                        g.add_vertex(v)
+                g.add_edge(start_vertex, terminal_vertex)
+    return g

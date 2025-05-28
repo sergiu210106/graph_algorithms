@@ -1,45 +1,37 @@
 from graph import Graph
 
-# problem 9 - assignment 6
-
-# Given a weighted undirected graph with negative cycles, find the minimum cost path
-# between 2 given vertices.
-
-
-def bellman_ford(graph: Graph, start_vertex: str, end_vertex: str):
+def find_shortest_simple_path_backtracking(graph: Graph, start_vertex: str, end_vertex: str):
     if not graph.weighted:
         raise ValueError("Graph must be weighted")
 
-    distance = {v: float('inf') for v in graph.get_vertices()}
-    distance[start_vertex] = 0
+    if start_vertex not in graph.get_vertices() or end_vertex not in graph.get_vertices():
+        raise ValueError("Start or end vertex not in graph")
 
-    predecessor = {v: None for v in graph.get_vertices()}
+    min_cost = float('inf')
+    shortest_path = []
 
-    V = graph.get_v()
+    def backtrack(current_vertex: str, current_path: list, current_cost: float, visited: set):
+        nonlocal min_cost, shortest_path
 
-    for _ in range(V - 1):
-        for u in graph.get_vertices():
-            for edge in graph.neighbours(u):
-                v, w = edge  # because graph is weighted
-                if distance[u] + w < distance[v]:
-                    distance[v] = distance[u] + w
-                    predecessor[v] = u
+        if current_vertex == end_vertex:
+            if current_cost < min_cost:
+                min_cost = current_cost
+                shortest_path = list(current_path)
+            return min_cost, shortest_path
 
-    # Check for negative-weight cycles
-    for u in graph.get_vertices():
-        for edge in graph.neighbours(u):
-            v, w = edge
-            if distance[u] + w < distance[v]:
-                # Negative cycle detected
-                raise ValueError("Negative cycle detected; shortest path is undefined")
+        for edge in graph.neighbours(current_vertex):
+            neighbor_vertex, weight = edge
 
-    # Reconstruct the path
-    path = []
-    current = end_vertex
-    while current is not None:
-        path.append(current)
-        current = predecessor[current]
+            if neighbor_vertex not in visited:
+                current_path.append(neighbor_vertex)
+                visited.add(neighbor_vertex)
 
-    path.reverse()
+                backtrack(neighbor_vertex, current_path, current_cost + weight, visited)
 
-    return distance[end_vertex], path
+                visited.remove(neighbor_vertex)
+                current_path.pop()
+
+    backtrack(start_vertex, [start_vertex], 0.0, {start_vertex})
+
+    return min_cost, shortest_path
+
